@@ -1,140 +1,45 @@
 import React, { useState } from 'react';
+import ManualTradingPanel from './components/ManualTradingPanel';
+import CopyTradingPanel from './components/CopyTradingPanel';
+import BulkTradingPanel from './components/BulkTradingPanel';
+import type { TradingMode } from './types';
+import './trading.scss';
+
+const symbols = [
+    { value: 'R_10', label: 'Volatility 10 Index' },
+    { value: 'R_25', label: 'Volatility 25 Index' },
+    { value: 'R_50', label: 'Volatility 50 Index' },
+    { value: 'R_75', label: 'Volatility 75 Index' },
+    { value: 'R_100', label: 'Volatility 100 Index' },
+];
+
+const tabs: Array<{ id: TradingMode; label: string }> = [
+    { id: 'manual', label: 'Manual Trading' },
+    { id: 'copy', label: 'Copy Trading' },
+    { id: 'bulk', label: 'Bulk Trading' },
+];
 
 const Trading = () => {
-    const [activeTab, setActiveTab] = useState('manual');
+    const [activeTab, setActiveTab] = useState<TradingMode>('manual');
 
-    return (
-        <div
-            style={{
-                minHeight: '100vh',
-                padding: '24px',
-                background: '#0f172a',
-                color: '#fff',
-                fontFamily: 'Arial, sans-serif',
-            }}
-        >
-            <h1 style={{ marginBottom: '8px' }}>PharleFX Trading</h1>
+    return <main className='trading-page'>
+        <div className='trading-page__inner'>
+            <header className='trading-page__header'>
+                <div><p className='trading-panel__eyebrow'>DERIV TRADING TERMINAL</p><h1>PharleFX Trading</h1><p className='trading-page__subtitle'>Manual Trading • Copy Trading • Bulk Trading</p></div>
+                <div className='account-status'><span className='account-status__dot' /> <span>Secure session</span><small>API credentials stay server-side</small></div>
+            </header>
+            <section className='trading-stats' aria-label='Trading overview'>
+                {['Balance —', 'Available margin —', 'Open contracts —', 'Today’s P/L —'].map(item => <div className='trading-stat' key={item}><span>{item.split(' —')[0]}</span><strong>—</strong></div>)}
+            </section>
+            <nav className='trading-tabs' aria-label='Trading modes'>
+                {tabs.map(tab => <button type='button' key={tab.id} className={activeTab === tab.id ? 'trading-tab active' : 'trading-tab'} onClick={() => setActiveTab(tab.id)} aria-selected={activeTab === tab.id}>{tab.label}</button>)}
+            </nav>
+            {activeTab === 'manual' && <ManualTradingPanel symbols={symbols} />}
+            {activeTab === 'copy' && <CopyTradingPanel />}
+            {activeTab === 'bulk' && <BulkTradingPanel />}
+            <p className='trading-disclaimer'>Trading involves risk. Review every proposal and use only funds you can afford to lose.</p>
+        </div>
+    </main>;
+};
 
-            <p style={{ color: '#94a3b8', marginBottom: '24px' }}>
-                Manual Trading • Copy Trading • Bulk Trading
-            </p>
-
-            <div
-                style={{
-                    display: 'flex',
-                    gap: '10px',
-                    flexWrap: 'wrap',
-                    marginBottom: '24px',
-                }}
-            >
-                {[
-                    ['manual', 'Manual Trading'],
-                    ['copy', 'Copy Trading'],
-                    ['bulk', 'Bulk Trading'],
-                ].map(([id, label]) => (
-                    <button
-                        key={id}
-                        onClick={() => setActiveTab(id)}
-                        style={{
-                            padding: '12px 18px',
-                            borderRadius: '8px',
-                            border: 'none',
-                            cursor: 'pointer',
-                            background:
-                                activeTab === id ? '#16a34a' : '#1e293b',
-                            color: '#fff',
-                            fontWeight: 'bold',
-                        }}
-                    >
-                        {label}
-                    </button>
-                ))}
-            </div>
-
-            {activeTab === 'manual' && (
-                <div>
-                    <h2>Manual Trading</h2>
-
-                    <div
-                        style={{
-                            background: '#1e293b',
-                            padding: '20px',
-                            borderRadius: '12px',
-                            marginTop: '16px',
-                        }}
-                    >
-                        <label>Symbol</label>
-                        <select
-                            style={{
-                                display: 'block',
-                                width: '100%',
-                                padding: '12px',
-                                margin: '8px 0 16px',
-                                borderRadius: '6px',
-                            }}
-                        >
-                            <option>Volatility 10 Index</option>
-                            <option>Volatility 25 Index</option>
-                            <option>Volatility 50 Index</option>
-                            <option>Volatility 75 Index</option>
-                            <option>Volatility 100 Index</option>
-                        </select>
-
-                        <label>Stake</label>
-                        <input
-                            type="number"
-                            placeholder="Enter stake"
-                            style={{
-                                display: 'block',
-                                width: '100%',
-                                padding: '12px',
-                                margin: '8px 0 16px',
-                                borderRadius: '6px',
-                                boxSizing: 'border-box',
-                            }}
-                        />
-
-                        <div style={{ display: 'flex', gap: '10px' }}>
-                            <button
-                                style={{
-                                    flex: 1,
-                                    padding: '14px',
-                                    border: 'none',
-                                    borderRadius: '8px',
-                                    background: '#16a34a',
-                                    color: '#fff',
-                                    fontWeight: 'bold',
-                                }}
-                            >
-                                BUY
-                            </button>
-
-                            <button
-                                style={{
-                                    flex: 1,
-                                    padding: '14px',
-                                    border: 'none',
-                                    borderRadius: '8px',
-                                    background: '#dc2626',
-                                    color: '#fff',
-                                    fontWeight: 'bold',
-                                }}
-                            >
-                                SELL
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {activeTab === 'copy' && (
-                <div
-                    style={{
-                        background: '#1e293b',
-                        padding: '20px',
-                        borderRadius: '12px',
-                    }}
-                >
-                    <h2>Copy Trading</h2>
-                    <p style={{ color: '#94a3b8' }}>
-                        Follow selected traders and manage 
+export default Trading;
