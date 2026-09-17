@@ -1,5 +1,4 @@
 export type TradingMode = 'manual' | 'copy' | 'bulk';
-
 export type ContractType = 'CALL' | 'PUT';
 export type DurationUnit = 't' | 's' | 'm';
 
@@ -11,9 +10,7 @@ export type TradeRequest = {
     durationUnit: DurationUnit;
 };
 
-export type BulkTradeRow = TradeRequest & {
-    id: string;
-};
+export type BulkTradeRow = TradeRequest & { id: string };
 
 export type CopyTradingSettings = {
     traderId: string;
@@ -21,4 +18,31 @@ export type CopyTradingSettings = {
     maxStake: number;
     maxDailyLoss: number;
     maxOpenPositions: number;
+};
+
+export type DerivTradeResult = {
+    status: string;
+    contractId?: string;
+    requestId?: string;
+    message?: string;
+};
+
+export type BulkTradeResult = {
+    clientOrderId: string;
+    status: 'accepted' | 'failed';
+    contractId?: string;
+    message?: string;
+};
+
+export type BulkTradeResponse = {
+    status: 'completed' | 'partial' | 'rejected';
+    requestId: string;
+    results: BulkTradeResult[];
+    message?: string;
+};
+
+export type CopyTradingResponse = {
+    status: 'configured' | 'rejected';
+    requestId: string;
+    message: string;
 };
