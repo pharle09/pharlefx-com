@@ -2,7 +2,9 @@ import { ALLOWED_CONTRACT_TYPES, ALLOWED_DURATION_UNITS, ALLOWED_SYMBOLS, MAX_BU
 import type { CopySettings, TradeInput } from './types';
 
 function positiveNumber(value: unknown, name: string): number {
-    if (typeof value !== 'number' || !Number.isFinite(value) || value <= 0) throw new Error(`${name} must be greater than zero.`);
+    if (typeof value !== 'number' || !Number.isFinite(value) || value <= 0) {
+        throw new Error(`${name} must be greater than zero.`);
+    }
     return value;
 }
 
@@ -20,9 +22,13 @@ export function validateTrade(input: unknown): TradeInput {
 }
 
 export function validateBulk(input: unknown): TradeInput[] {
-    if (!Array.isArray(input) || input.length === 0 || input.length > MAX_BULK_ORDERS) throw new Error(`Batch must contain 1-${MAX_BULK_ORDERS} orders.`);
+    if (!Array.isArray(input) || input.length === 0 || input.length > MAX_BULK_ORDERS) {
+        throw new Error(`Bulk submissions are limited to 1-${MAX_BULK_ORDERS} orders.`);
+    }
     const orders = input.map(validateTrade);
-    if (orders.reduce((total, order) => total + order.amount, 0) > MAX_BULK_STAKE) throw new Error(`Batch stake cannot exceed ${MAX_BULK_STAKE} USD.`);
+    if (orders.reduce((total, order) => total + order.amount, 0) > MAX_BULK_STAKE) {
+        throw new Error(`Bulk stake cannot exceed ${MAX_BULK_STAKE} USD.`);
+    }
     return orders;
 }
 
